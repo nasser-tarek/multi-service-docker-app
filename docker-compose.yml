@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend_net
+
+  backend:
+    build: ./backend
+    depends_on:
+    - db
+    networks:
+      - backend_net
+      - proxy_net
+
+  frontend:
+    build: ./frontend
+    networks:
+      - proxy_net
+
+  rev_proxy:
+    build: ./reverse_proxy
+    ports:
+      - "8080:80"
+    networks:
+      - proxy_net
+
+volumes:
+  db_data:
+
+networks:
+  backend_net:
+  proxy_net:
+

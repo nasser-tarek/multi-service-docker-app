@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Service Docker App 🚀</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .counter {
+            margin-top: 20px;
+            font-size: 22px;
+            color: #0077cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Multi-Service Docker App </h1>
+    <p>Frontend served by Nginx</p>
+    <div class="counter">
+        Page visit count: <span id="count">Loading...</span>
+    </div>
+
+    <script>
+        async function fetchVisits() {
+            try {
+                // Call backend API (through Nginx reverse proxy)
+                const response = await fetch("/api/");
+                const data = await response.json();
+                document.getElementById("count").textContent = data.visits;
+            } catch (error) {
+                document.getElementById("count").textContent = "Error loading count";
+                console.error("Error fetching visits:", error);
+            }
+        }
+
+        // Fetch immediately, then refresh every 5 seconds
+        fetchVisits();
+        setInterval(fetchVisits, 5000);
+    </script>
+</body>
+</html>
